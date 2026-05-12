@@ -14,13 +14,24 @@ RUN composer install --no-dev --optimize-autoloader
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-RUN echo 'server { \
-    listen 80; \
-    root /var/www/html/public; \
-    index index.php; \
-    location / { try_files $uri $uri/ /index.php?$query_string; } \
-    location ~ \.php$ { fastcgi_pass 127.0.0.1:9000; fastcgi_index index.php; include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; } \
-}' > /etc/nginx/sites-available/default
+RUN rm /etc/nginx/sites-enabled/default
+
+RUN echo 'server {\n\
+    listen 80;\n\
+    root /var/www/html/public;\n\
+    index index.php index.html;\n\
+    location / {\n\
+        try_files $uri $uri/ /index.php?$query_string;\n\
+    }\n\
+    location ~ \\.php$ {\n\
+        fastcgi_pass 127.0.0.1:9000;\n\
+        fastcgi_index index.php;\n\
+        include fastcgi_params;\n\
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
+    }\n\
+}' > /etc/nginx/sites-available/laravel.conf
+
+RUN ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/
 
 EXPOSE 80
 

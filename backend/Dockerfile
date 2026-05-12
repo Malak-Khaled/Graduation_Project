@@ -35,4 +35,4 @@ RUN ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/
 
 EXPOSE 80
 
-CMD bash -c "php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"
+CMD bash -c "php artisan migrate --force && php-fpm -D && nginx -t && nginx -g 'daemon off;'"

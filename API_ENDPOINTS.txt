@@ -1,0 +1,231 @@
+================================================================================
+  لصحتك (Graduation) — قائمة المسارات والـ Endpoints
+  مصدر: src/api/endpoints.js + src/api/axiosInstance.js + استدعاءات axios
+        + src/routes/AppRouter.jsx (مسارات الواجهة الأمامية)
+================================================================================
+
+--------------------------------------------------------------------------------
+1) قاعدة الـ API (Backend / REST)
+--------------------------------------------------------------------------------
+المتغير: VITE_API_BASE_URL
+الافتراضي في الكود إن لم يُضبط المتغير:
+  http://localhost:8000/api
+
+كل المسارات أدناه تُلحق بهذه القاعدة (بدون شرطة مزدوجة إضافية).
+مثال كامل: POST  http://localhost:8000/api/auth/login
+
+الرؤوس (محمي): Authorization: Bearer <token>
+(يُضبط تلقائياً من axiosInstance عند وجود توكن)
+
+--------------------------------------------------------------------------------
+2) مسارات مستخدمة فعلياً في الكود (axios)
+--------------------------------------------------------------------------------
+
+[AUTH — مصادقة]
+  POST   /auth/login
+         Body JSON: { email, password, role }  — role: patient | doctor | admin
+         استخدام: src/features/auth/authSlice.js
+
+  POST   /auth/register
+         Body: multipart/form-data (نموذج التسجيل)
+         استخدام: src/features/auth/authSlice.js
+
+[APPOINTMENTS — مواعيد المريض]
+  GET    /appointments
+         استخدام: src/features/appointments/appointmentsSlice.js
+
+  DELETE /appointments/:id
+         :id = معرف الموعد
+         استخدام: src/features/appointments/appointmentsSlice.js
+
+[INVOICES — فواتير المريض]
+  GET    /invoices
+         استخدام: src/features/invoices/invoicesSlice.js
+
+  POST   /invoices/:invoiceId/pay
+         Body JSON: { paymentMethod, cardData? }
+         استخدام: src/features/invoices/invoicesSlice.js
+
+[MEDICAL_RECORDS — السجل الطبي للمريض]
+  GET    /medical-records
+         استخدام: src/features/medicalRecords/medicalRecordsSlice.js
+
+  PUT    /medical-records
+         Body: بيانات التحديث (حسب العقد)
+         استخدام: src/features/medicalRecords/medicalRecordsSlice.js
+
+[ADMIN — إدارة (جزء مستخدم)]
+  POST   /admin/doctors
+         استخدام: src/Pages/admin/AdminDoctorsPage.jsx
+
+  POST   /admin/admins
+         استخدام: src/Pages/admin/AdminStaffPage.jsx
+
+--------------------------------------------------------------------------------
+3) مسارات معرفة في endpoints.js ولم تُستدعَ بعد من axios (مخططة / مستقبلية)
+--------------------------------------------------------------------------------
+
+[AUTH — إضافي]
+  POST   /auth/forgot-password
+  POST   /auth/verify-otp
+  POST   /auth/reset-password
+  POST   /auth/logout
+  GET    /auth/me
+  PUT    /auth/change-password
+
+[APPOINTMENTS — إضافي]
+  POST   /appointments
+  PATCH  /appointments/:id
+
+[PATIENT — ملف المريض]
+  GET/PUT… حسب الباك — مسارات مقترحة:
+  …      /patient/profile
+  …      /patient/change-password
+
+[DOCTOR — ملف وجدول الطبيب]
+  …      /doctor/profile
+  …      /doctor/schedule
+
+[ADMIN — كاملة من التعريف]
+  GET/POST…   /admin/doctors
+  GET/PUT/PATCH/DELETE… /admin/doctors/:id
+
+  GET/POST…   /admin/admins
+  GET/PUT/PATCH/DELETE… /admin/admins/:id
+
+  GET/POST…   /admin/patients
+  GET/PUT/PATCH/DELETE… /admin/patients/:id
+
+  …      /admin/appointments
+  …      /admin/stats
+  …      /admin/settings
+  …      /admin/invoices
+
+[DOCTOR_API — واجهات طبيب (صفحات حالياً بيانات ثابتة)]
+  …      /doctor/patients
+  …      /doctor/patients/:id
+  …      /doctor/prescriptions
+  …      /doctor/reports
+  …      /doctor/appointments
+  …      /doctor/messages
+
+[BOOKING — حجز وبحث أطباء]
+  …      /doctors/search
+  …      /doctors/:doctorId/slots
+
+[AI — مساعد ذكي]
+  POST…  /ai/chat
+  POST…  /ai/messages
+
+--------------------------------------------------------------------------------
+4) ملخص سريع — كل المسارات النسبية (REST) كما في endpoints.js
+--------------------------------------------------------------------------------
+/auth/login
+/auth/register
+/auth/forgot-password
+/auth/verify-otp
+/auth/reset-password
+/auth/logout
+/auth/me
+/auth/change-password
+
+/appointments
+/appointments/:id
+
+/invoices
+/invoices/:invoiceId/pay
+
+/medical-records
+
+/patient/profile
+/patient/change-password
+
+/doctor/profile
+/doctor/schedule
+
+/admin/doctors
+/admin/doctors/:id
+/admin/admins
+/admin/admins/:id
+/admin/patients
+/admin/patients/:id
+/admin/appointments
+/admin/stats
+/admin/settings
+/admin/invoices
+
+/doctor/patients
+/doctor/patients/:id
+/doctor/prescriptions
+/doctor/reports
+/doctor/appointments
+/doctor/messages
+
+/doctors/search
+/doctors/:doctorId/slots
+
+/ai/chat
+/ai/messages
+
+--------------------------------------------------------------------------------
+5) مسارات الواجهة الأمامية (React Router — SPA)
+    (نسبية لنطاق الموقع، مثال: https://your-domain.com/login)
+--------------------------------------------------------------------------------
+
+[عامة]
+  /
+  /login
+  /register
+  /contact
+  /about
+  /doctors
+  /forgot-password
+
+[لوحة المريض — يتطلب تسجيل دور patient]
+  /dashboard
+  /dashboard/booking
+  /dashboard/appointments
+  /dashboard/medical-records
+  /dashboard/invoices
+  /dashboard/ai-assistant
+  /dashboard/profile
+
+[لوحة الطبيب — يتطلب تسجيل دور doctor]
+  /doctor
+  /doctor/appointments
+  /doctor/patients
+  /doctor/prescriptions
+  /doctor/reports
+  /doctor/ai-assistant
+  /doctor/profile
+
+[لوحة الإدارة — يتطلب تسجيل دور admin]
+  /admin
+  /admin/doctors
+  /admin/staff
+  /admin/patients
+  /admin/appointments
+  /admin/invoices
+  /admin/settings
+
+[غير موجودة في الراوتر لكن يوجد ملف صفحة في المشروع]
+  (صفحة DoctorMessagesPage.jsx موجودة ككود؛ لا يوجد لها Route في AppRouter حالياً)
+
+[احتياطي]
+  /*  → صفحة NotFound (404)
+
+--------------------------------------------------------------------------------
+6) روابط خارجية تُستخدم في الواجهة (ليست باك المشروع)
+--------------------------------------------------------------------------------
+  https://randomuser.me/api/portraits/…  (صور تجريبية للأفاتار)
+
+--------------------------------------------------------------------------------
+7) مراجع إضافية في المستودع
+--------------------------------------------------------------------------------
+  graduation/docs/API_CONTRACT.md  — عقد مقترح للباك
+  graduation/src/api/endpoints.js  — تعريف موحّد للمسارات
+  graduation/src/api/axiosInstance.js
+
+================================================================================
+نهاية الملف
+================================================================================

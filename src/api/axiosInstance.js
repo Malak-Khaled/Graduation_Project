@@ -3,7 +3,7 @@ import { clearAuthData, getToken } from '../utils/authStorage';
 
 /** مسارات موحّدة: `endpoints.js` — توثيق العقد: `docs/API_CONTRACT.md` */
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://graduationproject-production-a395.up.railway.app/api',
   headers: {
     'Content-Type': 'application/json',
   },

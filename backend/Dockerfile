@@ -4,6 +4,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip git \
     && docker-php-ext-install pdo pdo_mysql zip
 
+RUN a2dismod mpm_event && a2enmod mpm_prefork rewrite
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
@@ -21,8 +23,6 @@ RUN echo '<VirtualHost *:80>\n\
         Require all granted\n\
     </Directory>\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
-
-RUN a2enmod rewrite
 
 EXPOSE 80
 

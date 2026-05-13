@@ -1,9 +1,11 @@
+import { getApiBaseUrl } from '../config/apiEnv';
+
 /**
  * أصل السيرفر لروابط الملفات الثابتة (صور البروفايل إلخ) بدون `/api`.
- * يعمل مع `VITE_API_BASE_URL` كعنوان مطلق أو مسار نسبي مثل `/api` عند استخدام proxy في Vite.
+ * يعمل مع عنوان مطلق أو مسار نسبي مثل `/api` عند استخدام proxy في Vite.
  */
 export function getApiOrigin() {
-  const base = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+  const base = getApiBaseUrl();
   if (typeof base === 'string' && /^https?:\/\//i.test(base)) {
     return base.replace(/\/api\/?$/i, '');
   }

@@ -1,16 +1,16 @@
 import axios from 'axios';
-import { clearAuthData, getToken } from '../utils/authStorage';
+import { getApiBaseUrl } from '../config/apiEnv';
+import { getToken } from '../utils/authStorage';
 
-/** مسارات موحّدة: `endpoints.js` — توثيق العقد: `docs/API_CONTRACT.md` */
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://graduationproject-production-a395.up.railway.app/api',
+const api = axios.create({
+  baseURL: getApiBaseUrl(),
   headers: {
-    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
   },
 });
 
-// Request interceptor - add token
-axiosInstance.interceptors.request.use((config) => {
+api.interceptors.request.use((config) => {
   const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -18,25 +18,4 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor - handle 401 (skip logout+redirect for /ai/* so the chat can show an error in-thread)
-function isAiRequest(config) {
-  return String(config?.url || '').includes('ai/');
-}
-
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      if (isAiRequest(error.config)) {
-        return Promise.reject(error);
-      }
-      clearAuthData();
-      if (window.location.pathname !== '/login') {
-        window.location.assign('/login');
-      }
-    }
-    return Promise.reject(error);
-  }
-);
-
-export default axiosInstance;
+export default api;

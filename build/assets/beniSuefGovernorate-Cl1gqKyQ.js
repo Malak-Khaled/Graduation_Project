@@ -1,0 +1,1 @@
+const a="بني سويف",s=["مركز بني سويف","سمسطا","الفشن","ببا","الواسطى","ناصر","إهناسيا"],_=["Beni Suef (center)","Samasta","El Fashn","Biba","El Wasta","Nasser","Ihnasiya"],A=[a],E={[a]:s};export{E as A,a as B,A as G,s as a,_ as b};

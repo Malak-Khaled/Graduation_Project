@@ -113,6 +113,18 @@ export function useAiChat({ roleContext = 'general', t: translate } = {}) {
         if (!cancelled) {
           // eslint-disable-next-line no-console
           console.warn('useAiChat bootstrap:', err);
+          if (err?.response?.status === 404 && translate) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            setMessages([
+              {
+                id: 'bootstrap-ai-404',
+                role: 'assistant',
+                text: translate('ai.errorAiNotDeployed'),
+                file: null,
+                time,
+              },
+            ]);
+          }
         }
       } finally {
         if (!cancelled) setLoadingHistory(false);
@@ -122,7 +134,7 @@ export function useAiChat({ roleContext = 'general', t: translate } = {}) {
     return () => {
       cancelled = true;
     };
-  }, [guestStorageKey, hasToken, loadFromServer, roleContext, storageKey]);
+  }, [guestStorageKey, hasToken, loadFromServer, roleContext, storageKey, translate]);
 
   const sendMessage = useCallback(
     async ({ text, attachmentName = null } = {}) => {
@@ -204,10 +216,16 @@ export function useAiChat({ roleContext = 'general', t: translate } = {}) {
           localStorage.removeItem(storageKey);
           setConversationId(null);
         }
-        const msg = getApiErrorMessage(err, 'Could not get a reply. Please try again.');
-        const errText = isConversationProblem && hasToken
-          ? `${msg} (${translate ? translate('ai.errorRetryNewChat') : 'Start a new chat below.'})`
-          : msg;
+        const isAiRoute404 = status === 404;
+        const msg = isAiRoute404 && translate
+          ? translate('ai.errorAiNotDeployed')
+          : getApiErrorMessage(err, 'Could not get a reply. Please try again.');
+        const errText =
+          isAiRoute404 && translate
+            ? msg
+            : isConversationProblem && hasToken
+              ? `${msg} (${translate ? translate('ai.errorRetryNewChat') : 'Start a new chat below.'})`
+              : msg;
         setMessages((prev) => [
           ...prev,
           { id: `e-${Date.now()}-u`, role: 'user', text: bodyText, file: attachmentName, time: messagePayload.time },

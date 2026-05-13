@@ -54,6 +54,8 @@ export default {
       'رد سريع: وصلتني رسالتك: "{{text}}". سجّل الدخول للحصول على إجابات أغنى ولحفظ المحادثة في حسابك.',
     guestLocalEmpty: 'كيف يمكنني مساعدتك اليوم؟',
     errorRetryNewChat: 'جرّب «محادثة جديدة» أو أرسل مرة أخرى',
+    errorAiNotDeployed:
+      'السيرفر الحالي لا يوفّر مسارات المساعد الذكي (/api/ai/…). انشر آخر نسخة من مجلد backend على السيرفر، ثم نفّذ: php artisan route:clear && php artisan config:clear. تأكد أن nginx يوجّه طلبات /api إلى مجلد public في Laravel.',
     floating: {
       title: 'المساعد الطبي الذكي',
       powered: 'مدعوم بالذكاء الاصطناعي',

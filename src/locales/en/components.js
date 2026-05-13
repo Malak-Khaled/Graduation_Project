@@ -54,6 +54,8 @@ export default {
       'Quick reply: I received: "{{text}}". Sign in for richer answers and saved chat history.',
     guestLocalEmpty: 'How can I help you today?',
     errorRetryNewChat: 'Try "New chat" or send again',
+    errorAiNotDeployed:
+      'This API server does not expose the AI assistant routes (/api/ai/…). Deploy the latest Laravel `backend` code, then run: php artisan route:clear && php artisan config:clear. Ensure your web server forwards /api/* to Laravel\'s public/index.php.',
     floating: {
       title: 'Medical AI assistant',
       powered: 'Powered by AI',

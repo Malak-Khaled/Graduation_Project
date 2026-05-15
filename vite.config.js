@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     port: 5173,
-    /** يوجّه طلبات `/api` إلى Laravel أثناء `npm run dev` لتفادي CORS (استخدم VITE_API_BASE_URL=/api في جذر المشروع). */
+    /** يوجّه طلبات `/api` إلى Laravel على الجهاز المحلي أثناء `npm run dev` (مع VITE_API_BASE_URL=/api). */
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8000',

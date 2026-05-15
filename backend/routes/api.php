@@ -12,6 +12,18 @@ use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PaymentWebhookController;
 use Illuminate\Support\Facades\Route;
 
+/** جذر الـ API (فتح المتصفح على /api فقط). */
+Route::get('/', fn () => response()->json([
+    'name' => config('app.name'),
+    'message' => 'API is running. Try GET /api/up or POST /api/auth/login.',
+]));
+
+/** فحص سريع للـ API (منصات النشر غالباً تستدعي /api/up — Laravel الافتراضي هو GET /up فقط). */
+Route::get('/up', fn () => response()->json([
+    'status' => 'ok',
+    'app' => config('app.name'),
+]));
+
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:15,1');
